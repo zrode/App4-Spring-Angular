@@ -1,28 +1,47 @@
 <div class="container mt-2">
     <!-- J'affiche la liste que si elle est chargée d'où le ngIf -->
-    <ng-container *ngIfElse="customers|async as listCustomers; else failureOrLoading">
-        <div class="card bg-warning">
-            <div class="card-header">Customers</div>
-            <div class="card-body">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>ID</th><th>Name</th><th>Email</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let c of customers | async">
-                            <td>{{ c.id }}</td>
-                            <td>{{ c.name }}</td>
-                            <td>{{ c.email }}</td>
-                        </tr>
-                    </tbody>
-                </table>
+    <div  *ngIf="customers|async as listCustomers; else failureOrLoading">
+        <ng-container>
+            <div class="card bg-warning">
+                <div class="card-header">Customers</div>
+                <div class="card-body">
+                    <div *ngIf="searchFormGroup">
+                        <form [formGroup]="searchFormGroup" (ngSubmit)="handleSearchCustomers()">
+                            <div class="input-group">
+                                <label class="input-group-text">Mot-Clé</label>
+                                <input type="text" formControlName="keyword" class="form-control"/>
+                                <button class="btn btn-danger"><i class="bi bi-search"></i></button>
+                            </div>
+
+                        </form>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th><th>Name</th><th>Email</th><th></th><th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let c of customers | async">
+                                <td>{{ c.id }}</td>
+                                <td>{{ c.name }}</td>
+                                <td>{{ c.email }}</td>
+                                <td>
+                                    <button class="btn btn-danger" (click)="handleDeleteCustomer(c)"><i class="bi bi-trash"></i></button>
+                                </td>
+                                <td>
+                                    <button class="btn btn-info" (click)="handleCustomerAccounts(c)">Accounts</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
-    </ng-container>
+        </ng-container>
+    </div>
+
     <ng-template #failureOrLoading>
-        <ng-container *ngIfElse="errorMessage; else loading">
+        <ng-container *ngIf="errorMessage; else loading">
             <div  class="text-danger">
                 {{errorMessage}}
             </div>
